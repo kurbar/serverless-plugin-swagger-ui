@@ -107,7 +107,7 @@ export class ServerlessSwaggerUi {
   }: {
     swaggerUiPath: string;
   }) => {
-    await fs.rmdir(swaggerUiPath, { recursive: true });
+    // await fs.rmdir(swaggerUiPath, { recursive: true });
     return await copy(
       path.dirname(require.resolve('swagger-ui-dist')),
       swaggerUiPath,
