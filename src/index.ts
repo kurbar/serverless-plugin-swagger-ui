@@ -199,9 +199,7 @@ export class ServerlessSwaggerUi {
     if (!Outputs) {
       throw new Error(`Stack: ${this.stackName} does not have any Outputs`);
     }
-    const output = Outputs.find(
-      (output) => output.OutputKey === 'HttpApiUrl'
-    );
+    const output = Outputs.find((output) => output.OutputKey === 'HttpApiUrl');
     if (!output) {
       throw new Error(
         `Stack: ${this.stackName} does not have Output: HttpApiUrl`
@@ -320,13 +318,13 @@ export class ServerlessSwaggerUi {
       swaggerUiConfig,
       documentationFileName,
     });
-    await this.writeDocumentationFile({
-      exportType,
-      accepts,
-      extensions,
-      swaggerUiPath,
-      documentationFileName,
-    });
+    // await this.writeDocumentationFile({
+    //   exportType,
+    //   accepts,
+    //   extensions,
+    //   swaggerUiPath,
+    //   documentationFileName,
+    // });
     if (s3Bucket) {
       await this.uploadToS3({ swaggerUiPath, s3Bucket });
     }
