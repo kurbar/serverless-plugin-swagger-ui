@@ -200,17 +200,17 @@ export class ServerlessSwaggerUi {
       throw new Error(`Stack: ${this.stackName} does not have any Outputs`);
     }
     const output = Outputs.find(
-      (output) => output.OutputKey === 'ServiceEndpoint'
+      (output) => output.OutputKey === 'HttpApiUrl'
     );
     if (!output) {
       throw new Error(
-        `Stack: ${this.stackName} does not have Output: ServiceEndpoint`
+        `Stack: ${this.stackName} does not have Output: HttpApiUrl`
       );
     }
     const { OutputValue } = output;
     if (!OutputValue) {
       throw new Error(
-        `Stack: ${this.stackName} does not have OutputValue: ServiceEndpoint`
+        `Stack: ${this.stackName} does not have OutputValue: HttpApiUrl`
       );
     }
     const [, apiId] = OutputValue.split('.')[0].split('//');
