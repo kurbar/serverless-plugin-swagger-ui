@@ -56,17 +56,12 @@ declare type Serverless = {
 export declare class ServerlessSwaggerUi {
   private serverless;
   private credentials?;
-  private stackName;
   private region;
-  private stage;
   constructor(serverless: Serverless);
   private validateConfig;
   private copySwaggerUi;
   private copyIndexFile;
   private writeConfigYaml;
-  private writeDocumentationFile;
-  private resolveApiGatewayId;
-  private getDocumentation;
   private uploadToS3;
   swaggerUi: () => Promise<void>;
   commands: {

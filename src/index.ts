@@ -1,6 +1,6 @@
-import CloudFormation from 'aws-sdk/clients/cloudformation';
+// import CloudFormation from 'aws-sdk/clients/cloudformation';
 import S3 from 'aws-sdk/clients/s3';
-import ApiGateway from 'aws-sdk/clients/apigateway';
+// import ApiGateway from 'aws-sdk/clients/apigateway';
 import { Credentials, CredentialsOptions } from 'aws-sdk/lib/credentials';
 
 import { promises as fs } from 'fs';
@@ -65,15 +65,15 @@ type Serverless = {
 
 export class ServerlessSwaggerUi {
   private credentials?: Credentials | CredentialsOptions;
-  private stackName: string;
+  // private stackName: string;
   private region: string;
-  private stage: string;
+  // private stage: string;
   constructor(private serverless: Serverless) {
     const provider = this.serverless.getProvider('aws');
     this.credentials = provider.getCredentials().credentials;
-    this.stackName = provider.naming.getStackName();
+    // this.stackName = provider.naming.getStackName();
     this.region = provider.getRegion();
-    this.stage = provider.getStage();
+    // this.stage = provider.getStage();
   }
   private validateConfig = () => {
     const { service } = this.serverless;
@@ -148,104 +148,104 @@ export class ServerlessSwaggerUi {
       yaml.dump(obj)
     );
   };
-  private writeDocumentationFile = async ({
-    exportType,
-    accepts,
-    extensions,
-    swaggerUiPath,
-    documentationFileName,
-  }: {
-    exportType: ExportType;
-    accepts: Accepts;
-    extensions: Extensions;
-    swaggerUiPath: string;
-    documentationFileName: string;
-  }) => {
-    const apiId = await this.resolveApiGatewayId();
-    const documentationBody = await this.getDocumentation({
-      apiId,
-      exportType,
-      accepts,
-      extensions,
-    });
-    if (!documentationBody) {
-      throw new Error('documentation body is falsy');
-    }
-    await fs.writeFile(
-      path.join(swaggerUiPath, documentationFileName),
-      documentationBody.toString()
-    );
-  };
-  private resolveApiGatewayId = async (): Promise<string> => {
-    this.serverless.cli.log(
-      'Resolving API Gateway ID...',
-      'Serverless SwaggerUI'
-    );
-    const cfn = new CloudFormation({
-      credentials: this.credentials,
-      region: this.region,
-    });
-    // throw error if stack does not exist
-    const stack = await cfn
-      .describeStacks({
-        StackName: this.stackName,
-      })
-      .promise();
-    const stacks = stack.Stacks;
-    if (!stacks || stacks.length < 1) {
-      throw new Error(`Stack: ${this.stackName} does not have any stacks`);
-    }
-    const { Outputs } = stacks[0];
-    if (!Outputs) {
-      throw new Error(`Stack: ${this.stackName} does not have any Outputs`);
-    }
-    const output = Outputs.find((output) => output.OutputKey === 'HttpApiUrl');
-    if (!output) {
-      throw new Error(
-        `Stack: ${this.stackName} does not have Output: HttpApiUrl`
-      );
-    }
-    const { OutputValue } = output;
-    if (!OutputValue) {
-      throw new Error(
-        `Stack: ${this.stackName} does not have OutputValue: HttpApiUrl`
-      );
-    }
-    const [, apiId] = OutputValue.split('.')[0].split('//');
-    return apiId;
-  };
-  private getDocumentation = async ({
-    apiId,
-    exportType,
-    accepts,
-    extensions,
-  }: {
-    apiId: string;
-    exportType: ExportType;
-    accepts: Accepts;
-    extensions: Extensions;
-  }) => {
-    this.serverless.cli.log(
-      'Exporting documentation...',
-      'Serverless SwaggerUI'
-    );
-    const ag = new ApiGateway({
-      credentials: this.credentials,
-      region: this.region,
-    });
-    const doc = await ag
-      .getExport({
-        exportType,
-        restApiId: apiId,
-        stageName: this.stage,
-        accepts,
-        parameters: {
-          extensions,
-        },
-      })
-      .promise();
-    return doc.body;
-  };
+  // private writeDocumentationFile = async ({
+  //   exportType,
+  //   accepts,
+  //   extensions,
+  //   swaggerUiPath,
+  //   documentationFileName,
+  // }: {
+  //   exportType: ExportType;
+  //   accepts: Accepts;
+  //   extensions: Extensions;
+  //   swaggerUiPath: string;
+  //   documentationFileName: string;
+  // }) => {
+  //   const apiId = await this.resolveApiGatewayId();
+  //   const documentationBody = await this.getDocumentation({
+  //     apiId,
+  //     exportType,
+  //     accepts,
+  //     extensions,
+  //   });
+  //   if (!documentationBody) {
+  //     throw new Error('documentation body is falsy');
+  //   }
+  //   await fs.writeFile(
+  //     path.join(swaggerUiPath, documentationFileName),
+  //     documentationBody.toString()
+  //   );
+  // };
+  // private resolveApiGatewayId = async (): Promise<string> => {
+  //   this.serverless.cli.log(
+  //     'Resolving API Gateway ID...',
+  //     'Serverless SwaggerUI'
+  //   );
+  //   const cfn = new CloudFormation({
+  //     credentials: this.credentials,
+  //     region: this.region,
+  //   });
+  //   // throw error if stack does not exist
+  //   const stack = await cfn
+  //     .describeStacks({
+  //       StackName: this.stackName,
+  //     })
+  //     .promise();
+  //   const stacks = stack.Stacks;
+  //   if (!stacks || stacks.length < 1) {
+  //     throw new Error(`Stack: ${this.stackName} does not have any stacks`);
+  //   }
+  //   const { Outputs } = stacks[0];
+  //   if (!Outputs) {
+  //     throw new Error(`Stack: ${this.stackName} does not have any Outputs`);
+  //   }
+  //   const output = Outputs.find((output) => output.OutputKey === 'HttpApiUrl');
+  //   if (!output) {
+  //     throw new Error(
+  //       `Stack: ${this.stackName} does not have Output: HttpApiUrl`
+  //     );
+  //   }
+  //   const { OutputValue } = output;
+  //   if (!OutputValue) {
+  //     throw new Error(
+  //       `Stack: ${this.stackName} does not have OutputValue: HttpApiUrl`
+  //     );
+  //   }
+  //   const [, apiId] = OutputValue.split('.')[0].split('//');
+  //   return apiId;
+  // };
+  // private getDocumentation = async ({
+  //   apiId,
+  //   exportType,
+  //   accepts,
+  //   extensions,
+  // }: {
+  //   apiId: string;
+  //   exportType: ExportType;
+  //   accepts: Accepts;
+  //   extensions: Extensions;
+  // }) => {
+  //   this.serverless.cli.log(
+  //     'Exporting documentation...',
+  //     'Serverless SwaggerUI'
+  //   );
+  //   const ag = new ApiGateway({
+  //     credentials: this.credentials,
+  //     region: this.region,
+  //   });
+  //   const doc = await ag
+  //     .getExport({
+  //       exportType,
+  //       restApiId: apiId,
+  //       stageName: this.stage,
+  //       accepts,
+  //       parameters: {
+  //         extensions,
+  //       },
+  //     })
+  //     .promise();
+  //   return doc.body;
+  // };
   private uploadToS3 = async ({
     swaggerUiPath,
     s3Bucket,
@@ -297,9 +297,9 @@ export class ServerlessSwaggerUi {
   };
   swaggerUi = async (): Promise<void> => {
     const {
-      exportType,
+      // exportType,
       accepts,
-      extensions,
+      // extensions,
       s3Bucket,
       swaggerUiDirectoryName,
       swaggerUiConfig,
